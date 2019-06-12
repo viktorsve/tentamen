@@ -1,0 +1,279 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "HomeNet",
+    "description": "listings of properties for sale",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3000",
+  "tags": [{
+    "name": "Listings",
+    "description": "API for listings in the system"
+  }],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/listings": {
+      "get": {
+        "tags": [
+          "Listings"
+        ],
+        "summary": "Lists all listings",
+        "parameters": [{
+          "name": "type",
+          "in": "query",
+          "type": "string",
+          "format": "type"
+        }, {
+          "name": "price",
+          "in": "query",
+          "type": "string",
+          "format": "price"
+        }, {
+          "name": "fee",
+          "in": "query",
+          "type": "string",
+          "format": "fee"
+        }, {
+          "name": "bidding",
+          "in": "query",
+          "type": "boolean",
+          "format": "bidding"
+        }, {
+          "name": "address.street",
+          "in": "query",
+          "type": "string",
+          "format": "street"
+        }, {
+          "name": "address.zipcode",
+          "in": "query",
+          "type": "string",
+          "format": "zipcode"
+        }, {
+          "name": "address.municipality",
+          "in": "query",
+          "type": "string",
+          "format": "municipality"
+        }, {
+          "name": "address.geo.lat",
+          "in": "query",
+          "type": "number",
+          "format": "lat"
+        }, {
+          "name": "address.geo.lng",
+          "in": "query",
+          "type": "number",
+          "format": "lng"
+        }],
+        "responses": {
+          "200": {
+            "description": "Array of listings",
+            "schema": {
+              "$ref": "#/definitions/Listings"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Listings"
+        ],
+        "summary": "Create new listing in system",
+        "parameters": [{
+          "name": "listing",
+          "in": "body",
+          "description": "Listing that we want to create",
+          "schema": {
+            "$ref": "#/definitions/Listing"
+          }
+        }],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "New listing is created",
+            "schema": {
+              "$ref": "#/definitions/Listing"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/listings/{listingId}": {
+      "parameters": [{
+        "name": "listingId",
+        "in": "path",
+        "required": true,
+        "description": "ID of listing that we want to find",
+        "type": "string"
+      }],
+      "get": {
+        "tags": [
+          "Listings"
+        ],
+        "summary": "Get listing with given ID",
+        "responses": {
+          "200": {
+            "description": "Listing is found",
+            "schema": {
+              "$ref": "#/definitions/Listing"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update listing with give ID",
+        "tags": [
+          "Listings"
+        ],
+        "parameters": [{
+          "name": "listing",
+          "in": "body",
+          "description": "Listing with new values of properties",
+          "schema": {
+            "$ref": "#/definitions/Listing"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Listing was updated"
+          },
+          "201": {
+            "description": "New listing created"
+          },
+          "204": {
+            "description": "No listing was created or updated"
+          },
+          "404": {
+            "description": "Listing not found with that id",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete listing with given ID",
+        "tags": [
+          "Listings"
+        ],
+        "responses": {
+          "200": {
+            "description": "Listing is deleted"
+          },
+          "404": {
+            "description": "Listing not found with that id",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "204": {
+            "description": "Nothing was removed"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Listings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Listing"
+      }
+    },
+    "Listing": {
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "fee": {
+          "type": "string"
+        },
+        "bidding": {
+          "type": "boolean"
+        },
+        "address": {
+          "properties": {
+            "street": {
+              "type": "string"
+            },
+            "zipcode": {
+              "type": "string"
+            },
+            "municipality": {
+              "type": "string"
+            },
+            "geo": {
+              "properties": {
+                "lat": {
+                  "type": "number"
+                },
+                "lng": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Error": {
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
