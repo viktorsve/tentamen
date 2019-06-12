@@ -20,25 +20,25 @@ app.use(express.urlencoded({
 
 app.use('/HomeNet', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use((error, req, res, next) => {
-  if (res.headersSent) {
-    return next(err)
-  } else if (err.kind === 'ObjectId') {
-    return res.status(404).send({
-      message: "Listing not found with that id"
-    });
-  }
-  res.status(error.statusCode || error.status || 500).send({
-    message: err.message
-  })
-})
-
 app.use((req, res, next) => {
   req.models = db.models
   next()
 })
 
 app.use('/', routes)
+
+app.use((error, req, res, next) => {
+  if (res.headersSent) {
+    return next(err)
+  } else if (error.kind === 'ObjectId') {
+    return res.status(404).send({
+      message: "Listing not found with that id"
+    });
+  }
+  res.status(error.statusCode || error.status || 500).send({
+    message: error.message
+  })
+})
 
 // Start up the database, then the server and begin listen to requests
 if (process.env.NODE_ENV != "test") {
